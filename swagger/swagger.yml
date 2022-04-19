@@ -1,0 +1,124 @@
+consumes:
+- application/json
+definitions:
+  user:
+    type: object
+    required: 
+      - name
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      address:
+        type: string
+        description: Address
+        example: ABC
+      created_at:
+        title: Created At
+        description: Timestamp when the user was created
+        type: string
+        format: date-time
+        readOnly: true
+  error:
+    type: object
+    required: 
+      - message
+    properties: 
+      code:
+        type: integer
+        format: int64
+      message:
+        type: string
+info:
+  title: Shivani User Example1
+  version: 0.1.0
+paths: 
+  /users:
+    get: 
+      tags:  
+        - users
+      operationId: find_Users
+      parameters: 
+        - name: name
+          in: query
+          type: string
+        - name: limit
+          in: query
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        200:
+          description: list the User operations
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/user"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+    post:
+      tags: 
+        - users
+      operationId: add_User
+      parameters:
+        - name: body
+          required: true
+          in: body
+          schema:
+            $ref: "#/definitions/user"
+      responses:
+        201:
+          description: Created
+        400:
+          description: Name should be atleast 3 characters long
+          schema:
+            $ref: "#/definitions/error"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/error"
+  /users/{id}:
+    parameters:
+      - type: string
+        name: id
+        in: path
+        required: true
+    delete:
+      tags: ["users"]
+      operationId: delete_user
+      responses:
+        204:
+          description: Deleted
+        404:
+          description: user is not found
+          schema:
+            $ref: "#/definitions/error"
+        default:
+          description: error
+          schema:
+            $ref: "#/definitions/error"
+    get: 
+      tags:  
+        - users
+      operationId: view_User
+      responses:
+        200:
+          description: list the particular User operations
+          schema:
+            $ref: "#/definitions/user"
+        404:
+          description: user is not found
+          schema:
+            $ref: "#/definitions/error"
+        default:
+          description: generic error response
+          schema:
+            $ref: "#/definitions/error"
+produces:
+- application/json
+schemes:
+- http
+swagger: "2.0"
